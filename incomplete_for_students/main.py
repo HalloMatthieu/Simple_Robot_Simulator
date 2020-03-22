@@ -260,18 +260,22 @@ class SimpleRobotControl:
         somme_angle =  1
         x_speed_mistake = m.x_goal - m.x
         y_speed_mistake = m.y_goal - m.y
-        K_x_p = 1
-        K_x_i = 1
-        K_x_d = 1
-        K_y_p = 1
-        K_y_i = 1
-        K_y_d = 1
-        K_theta_p = 1
-        K_theta_i = 1
-        K_theta_d = 1
-        x_controle_speed = K_x_p * x_speed_mistake
-        local_speed = 0
-        local_turn = 0
+        theta_angle_mistake = self.angle_diff(m.theta_goal, m.theta)
+        
+        x_somme_mistake = x_speed_mistake 
+        y_somme_mistake = y_speed_mistake
+        theta_somme_mistake = theta_angle_mistake
+       
+        x_controle_speed = KXP * x_speed_mistake + KXI * x_somme_mistake
+        y_controle_speed = KYP * y_speed_mistake + KYI * y_somme_mistake
+        theta_controle = KThetaP * theta_angle_mistake + KThetaI * theta_somme_mistake
+        
+        x_previous_mistake = x_speed_mistake
+        y_previous_mistake = y_speed_mistake
+        theta_previous_mistake = theta_angle_mistake
+        
+        local_speed = SPEED_P * distance
+        local_turn = theta_controle
 
         m1_speed, m2_speed = m.ik(local_speed, local_turn)
         m.m1.speed = m1_speed

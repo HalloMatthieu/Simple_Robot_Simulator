@@ -32,3 +32,14 @@ R = 0.0325
 # Modes management
 XY_GOAL = "XY_GOAL"
 WHEEL_CONTROL = "WHEEL_CONTROL"
+
+# Asserv PID
+KXP = 1
+KXI = 1
+KXD = 1
+KYP = 1
+KYI = 1
+KYD = 1
+KThetaP = 1
+KThetaI = 1
+KThetaD = 1
