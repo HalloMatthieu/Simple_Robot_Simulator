@@ -255,20 +255,25 @@ class SimpleRobotControl:
             (m.x_goal - m.x) * (m.x_goal - m.x) + (m.y_goal - m.y) * (m.y_goal - m.y)
         )
 
-        # TODO
+        if(distance < XY_TOL):
+            m.m1.speed = 0
+            m.m2.speed = 0
+        # Fixing asserv's mistakes
         angle_mistake = self.angle_diff(m.theta_goal, m.theta)
         somme_angle =  1
         x_speed_mistake = m.x_goal - m.x
         y_speed_mistake = m.y_goal - m.y
+        if(x_speed_mistake != 0 and y_speed_mistake != 0):
+            m.theta_goal = math.atan2(y_speed_mistake, m.x_goal - m.x)
         theta_angle_mistake = self.angle_diff(m.theta_goal, m.theta)
         
-        x_somme_mistake = x_speed_mistake 
+        x_somme_mistake = x_speed_mistake
         y_somme_mistake = y_speed_mistake
         theta_somme_mistake = theta_angle_mistake
        
         x_controle_speed = KXP * x_speed_mistake + KXI * x_somme_mistake
         y_controle_speed = KYP * y_speed_mistake + KYI * y_somme_mistake
-        theta_controle = KThetaP * theta_angle_mistake + KThetaI * theta_somme_mistake
+        theta_controle = TURN_P * theta_angle_mistake
         
         x_previous_mistake = x_speed_mistake
         y_previous_mistake = y_speed_mistake
@@ -285,10 +290,7 @@ class SimpleRobotControl:
         """Returns the smallest distance between 2 angles
         """
         # test the smallest angles between the two angles parameters
-        if(a >= b):
-            d = a - b
-        else:
-            d = b - a
+        d = (((a-b) + math.pi) % (2 * math.pi)) - math.pi
         return d
 
 
