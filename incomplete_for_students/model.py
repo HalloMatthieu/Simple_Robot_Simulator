@@ -6,7 +6,7 @@ from constants import *
 
 class Model(object):
     """
-    Represents the robot's state 
+    Represents the robot's state
     """
 
     def __init__(self):
@@ -40,67 +40,65 @@ class Model(object):
         return s
 
     def ik(self, linear_speed, rotational_speed):
-        """Given the linear speed and the rotational speed, 
+        """Given the linear speed and the rotational speed,
         returns the speed of the wheels in a differential wheeled robot
-        
+
         Arguments:
             linear_speed {float} -- Linear speed (m/s)
             rotational_speed {float} -- Rotational speed (rad/s)
-        
+
         Returns:
             float -- Speed of motor1 (m/s), speech of motor2 (m/s)
         """
         # TODO
-        m1_speed = linear_speed - (self.l * rotational_speed) / 2
-        m2_speed = linear_speed + (self.l * rotational_speed) / 2
+        m1_speed = linear_speed - (self.l * rotational_speed) / 2.0
+        m2_speed = linear_speed + (self.l * rotational_speed) / 2.0
         return m1_speed, m2_speed
 
     def dk(self, m1_speed=None, m2_speed=None):
-        """Given the speed of each of the 2 motors (m/s), 
+        """Given the speed of each of the 2 motors (m/s),
         returns the linear speed (m/s) and rotational speed (rad/s) of a differential wheeled robot
-        
+
         Keyword Arguments:
             m1_speed {float} -- Speed of motor1 (m/s) (default: {None})
             m2_speed {float} -- Speed of motor2 (default: {None})
-        
+
         Returns:
             float -- linear speed (m/s), rotational speed (rad/s)
         """
         # TODO
-        if(m1_speed == None):
+        if m1_speed == None:
             m1_speed = self.m1.speed
-        if(m2_speed == None):
+        if m2_speed == None:
             m2_speed = self.m2.speed
-            
+
         linear_speed = (self.m1.speed + self.m2.speed) / 2
         rotation_speed = (self.m1.speed - self.m2.speed) / L
-        
+
         return linear_speed, rotation_speed
-    
 
     def update(self, dt):
-        """Given the current state of the robot (speeds of the wheels) and a time step (dt), 
+        """Given the current state of the robot (speeds of the wheels) and a time step (dt),
         calculates the new position of the robot.
         The speed of the wheels are assumed constant during dt.
-        
+
         Arguments:
             dt {float} -- Travel time in seconds
         """
         # Going from wheel speeds to robot speed
         linear_speed, rotation_speed = self.dk()
-        
-        #If no rotation --> only x movement
-        if(rotation_speed == 0):
-            dy = dtheta = 0
+
+        # If no rotation --> only x movement
+        if rotation_speed == 0:
+            dy = 0
+            dtheta = 0
             dx = linear_speed * dt
         else:
             dtheta = rotation_speed * dt
-            dx = linear_speed * dt * math.sin(dtheta) / dtheta
-            dy = linear_speed * dt * (math.cos(dtheta) - 1) / dtheta
-            
+            dx = (linear_speed * dt) * (math.sin(dtheta) / dtheta)
+            dy = (linear_speed * dt) * ((math.cos(dtheta) - 1) / dtheta)
 
         # Updating the robot position
         self.x = self.x + dx * math.cos(self.theta) - dy * math.sin(self.theta)
         self.y = self.y + dy * math.sin(self.theta) + dy * math.cos(self.theta)
-        self.theta = self.theta + dtheta  
-
+        self.theta = self.theta + dtheta

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import random, math, pygame
+import random
+import math
+import pygame
 import pygame.draw
 from pygame.locals import *
 import sys
@@ -14,8 +16,9 @@ from constants import *
 
 class SimpleRobotControl:
     def __init__(self):
+
         self.control_modes = [XY_GOAL, WHEEL_CONTROL]
-        self.control_mode_id = 0        
+        self.control_mode_id = 0
         self.m = model.Model()
         self.m.x_goal = 0.05
         self.m.y_goal = 0.05
@@ -255,30 +258,30 @@ class SimpleRobotControl:
             (m.x_goal - m.x) * (m.x_goal - m.x) + (m.y_goal - m.y) * (m.y_goal - m.y)
         )
 
-        if(distance < XY_TOL):
+        if distance < XY_TOL:
             m.m1.speed = 0
             m.m2.speed = 0
         # Fixing asserv's mistakes
         angle_mistake = self.angle_diff(m.theta_goal, m.theta)
-        somme_angle =  1
+        somme_angle = 1
         x_speed_mistake = m.x_goal - m.x
         y_speed_mistake = m.y_goal - m.y
-        if(x_speed_mistake != 0 and y_speed_mistake != 0):
+        if x_speed_mistake != 0 and y_speed_mistake != 0:
             m.theta_goal = math.atan2(y_speed_mistake, m.x_goal - m.x)
         theta_angle_mistake = self.angle_diff(m.theta_goal, m.theta)
-        
+
         x_somme_mistake = x_speed_mistake
         y_somme_mistake = y_speed_mistake
         theta_somme_mistake = theta_angle_mistake
-       
+
         x_controle_speed = KXP * x_speed_mistake + KXI * x_somme_mistake
         y_controle_speed = KYP * y_speed_mistake + KYI * y_somme_mistake
         theta_controle = TURN_P * theta_angle_mistake
-        
+
         x_previous_mistake = x_speed_mistake
         y_previous_mistake = y_speed_mistake
         theta_previous_mistake = theta_angle_mistake
-        
+
         local_speed = SPEED_P * distance
         local_turn = theta_controle
 
@@ -290,7 +293,7 @@ class SimpleRobotControl:
         """Returns the smallest distance between 2 angles
         """
         # test the smallest angles between the two angles parameters
-        d = (((a-b) + math.pi) % (2 * math.pi)) - math.pi
+        d = (((a - b) + math.pi) % (2 * math.pi)) - math.pi
         return d
 
 
