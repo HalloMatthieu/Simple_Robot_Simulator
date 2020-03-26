@@ -36,3 +36,7 @@ if m.m1.speed == 9.4 and m.m2.speed == 10.6:
     print("Test4 OK")
 else:
     print("Test4 Failed")
+
+m.m1.speed = m.m2.speed = 10
+test_update = m.update(1)
+print("Test5 : {}".format(test_update))

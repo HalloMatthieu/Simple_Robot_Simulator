@@ -89,18 +89,20 @@ class Model(object):
         linear_speed, rotation_speed = self.dk()
 
         l = linear_speed * dt
+
         # If no rotation --> only x movement
         if rotation_speed == 0:
             dy = 0
             dtheta = 0
             dx = l
         else:
-            alpha = rotation_speed * dt
-            dx = l * (math.sin(alpha) / alpha)
-            dy = l * ((math.cos(alpha) - 1) / alpha)
-            dtheta = alpha
+            dtheta = rotation_speed * dt
+
+            dx = l * math.cos(self.theta)
+            dy = l * math.sin(self.theta)
 
         # Updating the robot position
-        self.x = self.x + (dx * math.cos(self.theta) - dy * math.sin(self.theta))
-        self.y = self.y + (dy * math.sin(self.theta) + dy * math.cos(self.theta))
+        self.x = self.x + (dx * math.cos(dtheta) - dy * math.sin(dtheta))
+        self.y = self.y + (dy * math.sin(dtheta) + dy * math.cos(dtheta))
         self.theta = self.theta + dtheta
+        return self.x, self.y, self.theta
