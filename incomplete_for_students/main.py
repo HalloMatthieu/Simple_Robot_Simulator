@@ -268,7 +268,7 @@ class SimpleRobotControl:
         x_speed_mistake = m.x_goal - m.x
         y_speed_mistake = m.y_goal - m.y
         if not (x_speed_mistake == 0 and y_speed_mistake == 0):
-            m.theta_goal = 2 * math.atan(
+            m.theta_goal = -2 * math.atan(
                 y_speed_mistake
                 / (
                     x_speed_mistake
