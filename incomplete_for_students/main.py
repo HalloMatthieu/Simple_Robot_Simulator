@@ -268,7 +268,16 @@ class SimpleRobotControl:
         x_speed_mistake = m.x_goal - m.x
         y_speed_mistake = m.y_goal - m.y
         if not (x_speed_mistake == 0 and y_speed_mistake == 0):
-            m.theta_goal = math.atan2(y_speed_mistake, x_speed_mistake)
+            m.theta_goal = 2 * math.atan(
+                y_speed_mistake
+                / (
+                    x_speed_mistake
+                    + math.sqrt(
+                        x_speed_mistake * x_speed_mistake
+                        + y_speed_mistake * y_speed_mistake
+                    )
+                )
+            )
 
         theta_angle_mistake = self.angle_diff(m.theta_goal, m.theta)
 
@@ -303,7 +312,7 @@ class SimpleRobotControl:
         """Returns the smallest distance between 2 angles
         """
         # test the smallest angles between the two angles parameters
-        d = (((a - b) + math.pi) % (2 * math.pi)) - math.pi
+        d = (((a + b) + math.pi) % (2 * math.pi)) - math.pi
         return d
 
 

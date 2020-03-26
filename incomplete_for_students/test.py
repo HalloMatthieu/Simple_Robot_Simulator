@@ -40,3 +40,7 @@ else:
 m.m1.speed = m.m2.speed = 10
 test_update = m.update(1)
 print("Test5 : {}".format(test_update))
+if test_update.x == 10 and test_update.y == 0 and test_update.theta == 0:
+    print("Test5 OK")
+else:
+    print("Test5 FAILED")
