@@ -72,7 +72,7 @@ class Model(object):
         if m2_speed == None:
             m2_speed = self.m2.speed
 
-        linear_speed = (self.m1.speed + self.m2.speed) / 2
+        linear_speed = (self.m1.speed + self.m2.speed) / 2.0
         rotation_speed = (self.m1.speed - self.m2.speed) / L
 
         return linear_speed, rotation_speed
@@ -88,17 +88,19 @@ class Model(object):
         # Going from wheel speeds to robot speed
         linear_speed, rotation_speed = self.dk()
 
+        l = linear_speed * dt
         # If no rotation --> only x movement
         if rotation_speed == 0:
             dy = 0
             dtheta = 0
-            dx = linear_speed * dt
+            dx = l
         else:
-            dtheta = rotation_speed * dt
-            dx = (linear_speed * dt) * (math.sin(dtheta) / dtheta)
-            dy = (linear_speed * dt) * ((math.cos(dtheta) - 1) / dtheta)
+            alpha = rotation_speed * dt
+            dx = l * (math.sin(alpha) / alpha)
+            dy = l * ((math.cos(alpha) - 1) / alpha)
+            dtheta = alpha
 
         # Updating the robot position
-        self.x = self.x + dx * math.cos(self.theta) - dy * math.sin(self.theta)
-        self.y = self.y + dy * math.sin(self.theta) + dy * math.cos(self.theta)
+        self.x = self.x + (dx * math.cos(self.theta) - dy * math.sin(self.theta))
+        self.y = self.y + (dy * math.sin(self.theta) + dy * math.cos(self.theta))
         self.theta = self.theta + dtheta

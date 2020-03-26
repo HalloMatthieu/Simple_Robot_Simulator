@@ -261,29 +261,39 @@ class SimpleRobotControl:
         if distance < XY_TOL:
             m.m1.speed = 0
             m.m2.speed = 0
+            return
         # Fixing asserv's mistakes
         angle_mistake = self.angle_diff(m.theta_goal, m.theta)
-        somme_angle = 1
+        # somme_angle = 1
         x_speed_mistake = m.x_goal - m.x
         y_speed_mistake = m.y_goal - m.y
-        if x_speed_mistake != 0 and y_speed_mistake != 0:
-            m.theta_goal = math.atan2(y_speed_mistake, m.x_goal - m.x)
+        if not (x_speed_mistake == 0 and y_speed_mistake == 0):
+            m.theta_goal = math.atan2(y_speed_mistake, x_speed_mistake)
+
         theta_angle_mistake = self.angle_diff(m.theta_goal, m.theta)
 
-        x_somme_mistake = x_speed_mistake
-        y_somme_mistake = y_speed_mistake
-        theta_somme_mistake = theta_angle_mistake
+        action = TURN_P * theta_angle_mistake
+        local_turn = action + m.acc
 
-        x_controle_speed = KXP * x_speed_mistake + KXI * x_somme_mistake
-        y_controle_speed = KYP * y_speed_mistake + KYI * y_somme_mistake
-        theta_controle = TURN_P * theta_angle_mistake
+        local_speed = 0
 
-        x_previous_mistake = x_speed_mistake
-        y_previous_mistake = y_speed_mistake
-        theta_previous_mistake = theta_angle_mistake
-
-        local_speed = SPEED_P * distance
-        local_turn = theta_controle
+        action = SPEED_P * distance
+        local_speed = action + m.speed_acc
+        #
+        # x_somme_mistake = x_speed_mistake
+        # y_somme_mistake = y_speed_mistake
+        # theta_somme_mistake = theta_angle_mistake
+        #
+        # x_controle_speed = KXP * x_speed_mistake
+        # y_controle_speed = KYP * y_speed_mistake
+        # theta_controle = TURN_P * theta_angle_mistake
+        #
+        # x_previous_mistake = x_speed_mistake
+        # y_previous_mistake = y_speed_mistake
+        # theta_previous_mistake = theta_angle_mistake
+        #
+        # local_speed = SPEED_P * distance + m.speed_acc
+        # local_turn = theta_controle + m.acc
 
         m1_speed, m2_speed = m.ik(local_speed, local_turn)
         m.m1.speed = m1_speed
